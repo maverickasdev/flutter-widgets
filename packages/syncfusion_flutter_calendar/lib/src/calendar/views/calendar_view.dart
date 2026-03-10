@@ -7411,34 +7411,39 @@ class _CalendarViewState extends State<_CalendarView>
       top: topPosition,
       right: 0,
       height: allDayExpanderHeight,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            left: 0,
-            top: 0,
-            right: 0,
-            height: _isExpanded ? allDayExpanderHeight : _allDayHeight,
-            child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                _getAllDayLayout(
-                  timeLabelWidth,
-                  panelHeight,
-                  allDayExpanderHeight,
-                  isCurrentView,
-                ),
-              ],
+      child: Container(
+        color: widget.calendar.viewHeaderStyle.allDayPanelColor ??
+            calendarTheme.allDayPanelColor ??
+            const Color(0xff171717),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              height: _isExpanded ? allDayExpanderHeight : _allDayHeight,
+              child: ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  _getAllDayLayout(
+                    timeLabelWidth,
+                    panelHeight,
+                    allDayExpanderHeight,
+                    isCurrentView,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            left: 0,
-            top: allDayExpanderHeight - 1,
-            right: 0,
-            height: 1,
-            child: shadowView,
-          ),
-        ],
+            Positioned(
+              left: 0,
+              top: allDayExpanderHeight - 1,
+              right: 0,
+              height: 1,
+              child: shadowView,
+            ),
+          ],
+        ),
       ),
     );
   }

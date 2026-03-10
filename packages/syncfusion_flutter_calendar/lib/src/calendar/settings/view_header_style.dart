@@ -39,6 +39,7 @@ class ViewHeaderStyle with Diagnosticable {
     this.backgroundColor,
     this.dateTextStyle,
     this.dayTextStyle,
+    this.allDayPanelColor,
   });
 
   /// The color which fills the background of [SfCalendar] view header view.
@@ -134,6 +135,11 @@ class ViewHeaderStyle with Diagnosticable {
   /// ```
   final TextStyle? dayTextStyle;
 
+  /// The background color of the all-day appointment panel.
+  ///
+  /// Defaults to null.
+  final Color? allDayPanelColor;
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -149,7 +155,8 @@ class ViewHeaderStyle with Diagnosticable {
     }
     return otherStyle.backgroundColor == backgroundColor &&
         otherStyle.dayTextStyle == dayTextStyle &&
-        otherStyle.dateTextStyle == dateTextStyle;
+        otherStyle.dateTextStyle == dateTextStyle &&
+        otherStyle.allDayPanelColor == allDayPanelColor;
   }
 
   @override
@@ -162,10 +169,11 @@ class ViewHeaderStyle with Diagnosticable {
       DiagnosticsProperty<TextStyle>('dateTextStyle', dateTextStyle),
     );
     properties.add(ColorProperty('backgroundColor', backgroundColor));
+    properties.add(ColorProperty('allDayPanelColor', allDayPanelColor));
   }
 
   @override
   int get hashCode {
-    return Object.hash(backgroundColor, dayTextStyle, dateTextStyle);
+    return Object.hash(backgroundColor, dayTextStyle, dateTextStyle, allDayPanelColor);
   }
 }
