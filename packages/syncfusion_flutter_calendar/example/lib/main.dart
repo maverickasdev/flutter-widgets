@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 
 void main() {
   return runApp(const CalendarApp());
@@ -28,15 +29,51 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SfCalendar(
-        view: CalendarView.month,
-        dataSource: MeetingDataSource(_getDataSource()),
-        // by default the month appointment display mode set as Indicator, we can
-        // change the display mode as appointment using the appointment display
-        // mode property
-        monthViewSettings: const MonthViewSettings(
-          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+    return SafeArea(
+      child: Scaffold(
+        body: SfCalendar(
+          view: CalendarView.day,
+          dataSource: MeetingDataSource(_getDataSource()),
+          // by default the month appointment display mode set as Indicator, we can
+          // change the display mode as appointment using the appointment display
+          // mode property
+          monthViewSettings: const MonthViewSettings(
+            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+          ),
+          timeSlotViewSettings: const TimeSlotViewSettings(
+            numberOfDaysInView: 1,
+            timeFormat: 'HH:mm',
+            dayFormat: 'EEE',
+          ),
+          backgroundColor: const Color(0xFF000000),
+          headerHeight: 0,
+          viewHeaderHeight: 68,
+          firstDayOfWeek: 1,
+          todayHighlightColor: const Color(0xFF246BFD),
+          todayTextStyle: const TextStyle(
+            fontSize: 14,
+            color: Color(0xFFFFFFFF),
+            height: 1.57,
+            fontWeight: FontWeight.bold,
+          ),
+          selectionDecoration: BoxDecoration(
+            color: const Color(0xFFFFFFFF).withValues(alpha: 0.25),
+          ),
+          viewHeaderStyle: const ViewHeaderStyle(
+            backgroundColor: Color(0xFF000000),
+            dayTextStyle: TextStyle(
+              fontSize: 10,
+              color: Color(0xFF888888),
+              height: 1.6,
+              fontWeight: FontWeight.w400,
+            ),
+            dateTextStyle: TextStyle(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+              height: 1.625,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
         ),
       ),
     );

@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   syncfusion_flutter_calendar:
     path: ../
+  syncfusion_flutter_core:
+    path: ../../syncfusion_flutter_core
 
 dev_dependencies:
   flutter_test:

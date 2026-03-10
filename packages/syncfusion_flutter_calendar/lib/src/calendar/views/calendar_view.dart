@@ -13281,9 +13281,10 @@ class _ViewHeaderViewPainter extends CustomPainter {
 
     /// Initializes the default text style for the texts in view header of
     /// calendar.
-    final TextStyle viewHeaderDayStyle = calendarTheme.viewHeaderDayTextStyle!;
-    final TextStyle viewHeaderDateStyle =
-        calendarTheme.viewHeaderDateTextStyle!;
+    final TextStyle viewHeaderDayStyle = calendarTheme.viewHeaderDayTextStyle!
+        .copyWith(color: Colors.white);
+    final TextStyle viewHeaderDateStyle = calendarTheme.viewHeaderDateTextStyle!
+        .copyWith(color: Colors.white);
 
     final DateTime today = DateTime.now();
     if (view != CalendarView.month) {
@@ -13360,7 +13361,7 @@ class _ViewHeaderViewPainter extends CustomPainter {
                 )
                 : viewHeaderDayStyle.copyWith(color: todayTextColor);
       } else {
-        dayTextStyle = viewHeaderDayStyle;
+        dayTextStyle = viewHeaderDayStyle.copyWith(color: Colors.white);
       }
 
       _updateDayTextPainter(dayTextStyle, width, dayText);
@@ -13435,7 +13436,7 @@ class _ViewHeaderViewPainter extends CustomPainter {
         isDayView && timeLabelWidth < 50 ? 50 : timeLabelWidth;
     TextStyle dayTextStyle = viewHeaderDayStyle;
     TextStyle dateTextStyle = viewHeaderDateStyle;
-    const double topPadding = 5;
+    const double topPadding = 0;
     if (isDayView) {
       width = labelWidth;
     }
@@ -13470,7 +13471,7 @@ class _ViewHeaderViewPainter extends CustomPainter {
         final Color? todayTextStyleColor = calendarTheme.todayTextStyle!.color;
         final Color? todayTextColor =
             CalendarViewHelper.getTodayHighlightTextColor(
-              todayHighlightColor,
+              Colors.white,
               todayTextStyle,
               calendarTheme,
             );
@@ -13488,8 +13489,8 @@ class _ViewHeaderViewPainter extends CustomPainter {
                 )
                 : viewHeaderDateStyle.copyWith(color: todayTextStyleColor);
       } else {
-        dayTextStyle = viewHeaderDayStyle;
-        dateTextStyle = viewHeaderDateStyle;
+        dayTextStyle = viewHeaderDayStyle.copyWith(color: Colors.white);
+        dateTextStyle = viewHeaderDateStyle.copyWith(color: Colors.white);
       }
 
       if (!isDateWithInDateRange(minDate, maxDate, currentDate)) {
@@ -13532,7 +13533,7 @@ class _ViewHeaderViewPainter extends CustomPainter {
       /// To calculate the date start position by width and date painter
       final double dateXPosition = (cellWidth - _dateTextPainter.width) / 2;
 
-      const int inBetweenPadding = 2;
+      const int inBetweenPadding = 0;
       yPosition =
           size.height / 2 -
           (_dayTextPainter.height +
@@ -13541,17 +13542,14 @@ class _ViewHeaderViewPainter extends CustomPainter {
                   inBetweenPadding) /
               2;
 
-      _dayTextPainter.paint(
-        canvas,
-        Offset(xPosition + dayXPosition, yPosition),
-      );
-
       if (isToday) {
         _drawTodayCircle(
           canvas,
           xPosition + dateXPosition,
           yPosition + topPadding + _dayTextPainter.height + inBetweenPadding,
           _dateTextPainter,
+          combinedTopY: yPosition,
+          dayTextWidth: _dayTextPainter.width,
         );
       }
 
@@ -13567,6 +13565,12 @@ class _ViewHeaderViewPainter extends CustomPainter {
           inBetweenPadding,
         );
       }
+
+      // Paint both text layers after the badge so they are never covered.
+      _dayTextPainter.paint(
+        canvas,
+        Offset(xPosition + dayXPosition, yPosition),
+      );
 
       _dateTextPainter.paint(
         canvas,
@@ -13709,6 +13713,8 @@ class _ViewHeaderViewPainter extends CustomPainter {
         yPosition + topPadding + _dayTextPainter.height + padding,
         _dateTextPainter,
         hoveringColor: hoveringColor,
+        combinedTopY: yPosition,
+        dayTextWidth: _dayTextPainter.width,
       );
     }
   }
@@ -13819,18 +13825,52 @@ class _ViewHeaderViewPainter extends CustomPainter {
     double y,
     TextPainter dateTextPainter, {
     Color? hoveringColor,
+    // When provided, the badge stretches from [combinedTopY] to the bottom
+    // of the date text, covering both the day-name and date-number rows.
+    double combinedTopY = -1,
+    double dayTextWidth = 0,
   }) {
     _circlePainter.color = (hoveringColor ?? todayHighlightColor)!;
-    const double circlePadding = 5;
-    final double painterWidth = dateTextPainter.width / 2;
-    final double painterHeight = dateTextPainter.height / 2;
-    final double radius =
-        painterHeight > painterWidth ? painterHeight : painterWidth;
-    canvas.drawCircle(
-      Offset(x + painterWidth, y + painterHeight),
-      radius + circlePadding,
-      _circlePainter,
-    );
+    const double badgePadding = 8;
+    final double textWidth = dateTextPainter.width;
+    final double textHeight = dateTextPainter.height;
+
+    if (combinedTopY >= 0) {
+      // Badge covers both day-name row and date-number row.
+      final double totalHeight = (y + textHeight) - combinedTopY;
+      final double maxWidth =
+          textWidth > dayTextWidth ? textWidth : dayTextWidth;
+      final double badgeW = maxWidth + badgePadding * 3;
+      final double badgeH = totalHeight + badgePadding * 1;
+      final double centerX = x + textWidth / 2;
+      final double centerY = combinedTopY + totalHeight / 2;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(centerX, centerY),
+            width: badgeW,
+            height: badgeH,
+          ),
+          const Radius.circular(8),
+        ),
+        _circlePainter,
+      );
+    } else {
+      // Fallback: square badge around the date number only.
+      final double badgeSize =
+          (textWidth > textHeight ? textWidth : textHeight) + badgePadding * 2;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(x + textWidth / 2, y + textHeight / 2),
+            width: badgeSize,
+            height: badgeSize,
+          ),
+          const Radius.circular(8),
+        ),
+        _circlePainter,
+      );
+    }
   }
 
   /// overrides this property to build the semantics information which uses to
