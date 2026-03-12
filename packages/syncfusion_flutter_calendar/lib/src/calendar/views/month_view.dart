@@ -998,6 +998,7 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
   void _drawMonthCells(Canvas canvas, Size size) {
     const double viewPadding = 5;
     const double circlePadding = 4;
+    const double textLeftPadding = 8.0;
     final double cellWidth =
         (size.width - weekNumberPanelWidth) / DateTime.daysPerWeek;
     final double cellHeight = size.height / rowCount;
@@ -1195,6 +1196,31 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
         _linePainter,
       );
 
+      // Draw diagonal hatching for weekend cells (Saturday and Sunday).
+      if (currentVisibleDate.weekday == DateTime.saturday ||
+          currentVisibleDate.weekday == DateTime.sunday) {
+        final double cellTop = yPosition - viewPadding;
+        final double cellBottom = cellTop + cellHeight;
+        canvas.save();
+        canvas.clipRect(
+          Rect.fromLTWH(xPosition, cellTop, cellWidth, cellHeight),
+        );
+        _linePainter.style = PaintingStyle.stroke;
+        _linePainter.color = const Color(0xFFFFFFFF).withValues(alpha: 0.08);
+        _linePainter.strokeWidth = 1.0;
+        const double hatchSpacing = 8.0;
+        double startX = xPosition - cellHeight;
+        while (startX < xPosition + cellWidth) {
+          canvas.drawLine(
+            Offset(startX, cellTop),
+            Offset(startX + cellHeight, cellBottom),
+            _linePainter,
+          );
+          startX += hatchSpacing;
+        }
+        canvas.restore();
+      }
+
       if (calendarCellNotifier.value != null && !isBlackoutDate) {
         _addMouseHovering(
           canvas,
@@ -1214,7 +1240,7 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
         final double textHeight = _textPainter.height / 2;
         canvas.drawCircle(
           Offset(
-            xPosition + cellWidth / 2,
+            xPosition + textLeftPadding + _textPainter.width / 2,
             yPosition + circlePadding + textHeight,
           ),
           textHeight + viewPadding,
@@ -1225,7 +1251,7 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
       _textPainter.paint(
         canvas,
         Offset(
-          xPosition + (cellWidth / 2 - _textPainter.width / 2),
+          xPosition + textLeftPadding,
           yPosition + circlePadding,
         ),
       );

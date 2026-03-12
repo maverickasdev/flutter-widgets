@@ -13366,7 +13366,9 @@ class _ViewHeaderViewPainter extends CustomPainter {
                 )
                 : viewHeaderDayStyle.copyWith(color: todayTextColor);
       } else {
-        dayTextStyle = viewHeaderDayStyle.copyWith(color: Colors.white);
+        dayTextStyle = viewHeaderDayStyle.copyWith(
+          color: viewHeaderStyle.dayTextStyle?.color ?? Colors.white,
+        );
       }
 
       _updateDayTextPainter(dayTextStyle, width, dayText);
@@ -13494,8 +13496,12 @@ class _ViewHeaderViewPainter extends CustomPainter {
                 )
                 : viewHeaderDateStyle.copyWith(color: todayTextStyleColor);
       } else {
-        dayTextStyle = viewHeaderDayStyle.copyWith(color: Colors.white);
-        dateTextStyle = viewHeaderDateStyle.copyWith(color: Colors.white);
+        dayTextStyle = viewHeaderDayStyle.copyWith(
+          color: viewHeaderStyle.dayTextStyle?.color ?? Colors.white,
+        );
+        dateTextStyle = viewHeaderDateStyle.copyWith(
+          color: viewHeaderStyle.dateTextStyle?.color ?? Colors.white,
+        );
       }
 
       if (!isDateWithInDateRange(minDate, maxDate, currentDate)) {
