@@ -205,6 +205,7 @@ class SfCalendar extends StatefulWidget {
     this.showTodayButton = false,
     this.allowViewNavigation = false,
     this.showCurrentTimeIndicator = true,
+    this.currentTimeLabelStyle,
     this.cellEndPadding = -1,
     this.viewNavigationMode = ViewNavigationMode.snap,
     this.allowedViews,
@@ -423,6 +424,13 @@ class SfCalendar extends StatefulWidget {
   ///
   /// ```
   final bool showCurrentTimeIndicator;
+
+  /// The text style for the current time label displayed next to the
+  /// current time indicator dot in timeslot views.
+  ///
+  /// If null, defaults to a 12px medium-weight label using
+  /// [todayHighlightColor].
+  final TextStyle? currentTimeLabelStyle;
 
   /// Defines the view for the [SfCalendar].
   ///

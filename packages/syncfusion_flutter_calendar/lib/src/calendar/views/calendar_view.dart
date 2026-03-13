@@ -9994,6 +9994,7 @@ class _CalendarViewState extends State<_CalendarView>
           _isRTL,
           _currentTimeNotifier,
           widget.calendar.timeZone ?? '',
+          widget.calendar.currentTimeLabelStyle,
         ),
         size: Size(width, height),
       ),
@@ -14972,6 +14973,7 @@ class _CurrentTimeIndicator extends CustomPainter {
     this.isRTL,
     ValueNotifier<int> repaintNotifier,
     this.timeZone,
+    this.currentTimeLabelStyle,
   ) : super(repaint: repaintNotifier);
   final double timeIntervalSize;
   final TimeSlotViewSettings timeSlotViewSettings;
@@ -14981,6 +14983,7 @@ class _CurrentTimeIndicator extends CustomPainter {
   final Color? todayHighlightColor;
   final bool isRTL;
   final String timeZone;
+  final TextStyle? currentTimeLabelStyle;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -15066,6 +15069,27 @@ class _CurrentTimeIndicator extends CustomPainter {
         Offset(viewEndPosition, startYPosition),
         painter,
       );
+
+      // Draw HH:mm time label in the time ruler area
+      final String timeLabel =
+          '${getLocationDateTime.hour.toString().padLeft(2, '0')}:'
+          '${getLocationDateTime.minute.toString().padLeft(2, '0')}';
+      final TextStyle resolvedLabelStyle = (currentTimeLabelStyle ?? const TextStyle()).copyWith(
+        color: currentTimeLabelStyle?.color ?? todayHighlightColor,
+        fontSize: currentTimeLabelStyle?.fontSize ?? 12,
+        fontWeight: currentTimeLabelStyle?.fontWeight ?? FontWeight.w500,
+      );
+      final TextPainter timeLabelPainter = TextPainter(
+        text: TextSpan(text: timeLabel, style: resolvedLabelStyle),
+        textDirection: TextDirection.ltr,
+      );
+      timeLabelPainter.layout(maxWidth: timeRulerSize);
+      final double textX = isRTL
+          ? size.width - (timeRulerSize - timeLabelPainter.width) / 2 -
+              timeLabelPainter.width
+          : (timeRulerSize - timeLabelPainter.width) / 2;
+      final double textY = startYPosition - timeLabelPainter.height / 2;
+      timeLabelPainter.paint(canvas, Offset(textX, textY));
     }
   }
 
