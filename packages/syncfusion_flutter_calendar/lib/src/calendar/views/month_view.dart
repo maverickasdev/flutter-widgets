@@ -1206,7 +1206,8 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
           Rect.fromLTWH(xPosition, cellTop, cellWidth, cellHeight),
         );
         _linePainter.style = PaintingStyle.stroke;
-        _linePainter.color = const Color(0xFFFFFFFF).withValues(alpha: 0.08);
+        _linePainter.color = _monthCellStyle.weekendHatchColor ??
+            const Color(0xFFFFFFFF).withValues(alpha: 0.08);
         _linePainter.strokeWidth = 1.0;
         const double hatchSpacing = 8.0;
         double startX = xPosition - cellHeight;

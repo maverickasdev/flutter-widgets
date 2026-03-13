@@ -1152,6 +1152,7 @@ class MonthCellStyle with Diagnosticable {
     this.todayTextStyle,
     this.trailingDatesTextStyle,
     this.leadingDatesTextStyle,
+    this.weekendHatchColor,
   });
 
   /// The text style for the text in the [SfCalendar] month cells.
@@ -1360,6 +1361,12 @@ class MonthCellStyle with Diagnosticable {
   ///  }
   /// ```
   final TextStyle? leadingDatesTextStyle;
+
+  /// The color used for the diagonal hatch pattern drawn over weekend cells
+  /// (Saturday and Sunday) in the month view.
+  ///
+  /// Defaults to null, which falls back to `Color(0xFFFFFFFF)` with 8% opacity.
+  final Color? weekendHatchColor;
 
   /// The background color to fill the background of the [SfCalendar]
   /// month cell.
@@ -1601,7 +1608,8 @@ class MonthCellStyle with Diagnosticable {
         otherStyle.todayBackgroundColor == todayBackgroundColor &&
         otherStyle.trailingDatesBackgroundColor ==
             trailingDatesBackgroundColor &&
-        otherStyle.leadingDatesBackgroundColor == leadingDatesBackgroundColor;
+        otherStyle.leadingDatesBackgroundColor == leadingDatesBackgroundColor &&
+        otherStyle.weekendHatchColor == weekendHatchColor;
   }
 
   @override
@@ -1631,6 +1639,7 @@ class MonthCellStyle with Diagnosticable {
     properties.add(
       ColorProperty('leadingDatesBackgroundColor', leadingDatesBackgroundColor),
     );
+    properties.add(ColorProperty('weekendHatchColor', weekendHatchColor));
   }
 
   @override
@@ -1643,6 +1652,7 @@ class MonthCellStyle with Diagnosticable {
       todayBackgroundColor,
       trailingDatesBackgroundColor,
       leadingDatesBackgroundColor,
+      weekendHatchColor,
     );
   }
 }
