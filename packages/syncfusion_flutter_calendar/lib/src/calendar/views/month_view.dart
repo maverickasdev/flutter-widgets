@@ -996,6 +996,12 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
   }
 
   void _drawMonthCells(Canvas canvas, Size size) {
+    final brightness = _themeData.brightness;
+    final hatchColor =
+        brightness == Brightness.light
+            ? const Color(0xFF171717).withValues(alpha: 0.07)
+            : const Color(0xFFFFFFFF).withValues(alpha: 0.08);
+
     const double viewPadding = 5;
     const double circlePadding = 4;
     const double textLeftPadding = 8.0;
@@ -1206,8 +1212,7 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
           Rect.fromLTWH(xPosition, cellTop, cellWidth, cellHeight),
         );
         _linePainter.style = PaintingStyle.stroke;
-        _linePainter.color = _monthCellStyle.weekendHatchColor ??
-            const Color(0xFFFFFFFF).withValues(alpha: 0.08);
+        _linePainter.color = _monthCellStyle.weekendHatchColor ?? hatchColor;
         _linePainter.strokeWidth = 1.0;
         const double hatchSpacing = 8.0;
         double startX = xPosition - cellHeight;
@@ -1251,10 +1256,7 @@ class _MonthViewRenderObject extends CustomCalendarRenderObject {
 
       _textPainter.paint(
         canvas,
-        Offset(
-          xPosition + textLeftPadding,
-          yPosition + circlePadding,
-        ),
+        Offset(xPosition + textLeftPadding, yPosition + circlePadding),
       );
 
       if (isRTL) {
